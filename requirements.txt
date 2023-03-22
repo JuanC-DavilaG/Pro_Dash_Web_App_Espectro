@@ -5,3 +5,6 @@ pandas
 openpyxl
 scipy
 matplotlib
+geopandas
+lxml
+bs4

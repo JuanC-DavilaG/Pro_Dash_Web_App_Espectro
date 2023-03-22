@@ -1,30 +1,16 @@
 import pandas as pd
 import numpy as np
 from openpyxl import Workbook, load_workbook
-import os
-import sys
 
 # Motor Espectro
-
 def Ocupacion(band, can, baja, alta, condiciones, SerPer, concecionado):
-
-    # Creamos la ruta absoludo
-    absolutepath = os.path.abspath(__file__)
-    fileDirectory = os.path.dirname(absolutepath)
-    # Ruta del directorio principal
-    parentDirectory = os.path.dirname(fileDirectory)
     
-    # Ruta de la base
-    tablas = "assets\DataBase"
+    # Leemos los datos
+    tablas = "./assets/DataBase/tablas.csv"
 
-    # Creamos la ruta absoluta a la base
-    newPath = os.path.join(parentDirectory, tablas)
-    newPath = os.path.join(newPath, "tablas.csv")
-
-    # Leemos la base
-    csv_tablas = pd.read_csv(open(newPath, 'rb'), encoding='latin-1')
+    csv_tablas = pd.read_csv(open(tablas, 'rb'), encoding='latin-1')
     
-    ################ Inicio Construir segmento
+    ################ Inicio construir segmento
 
     arr = []
 
@@ -43,7 +29,7 @@ def Ocupacion(band, can, baja, alta, condiciones, SerPer, concecionado):
 
     arr = np.array(arr)
 
-    ################ Fin Construir segmento
+    ################ Fin construir segmento
 
 
     ################ Inicio Espectro Libre
@@ -91,6 +77,7 @@ def Ocupacion(band, can, baja, alta, condiciones, SerPer, concecionado):
 
 
         ################ Inicio Quitar Espectro Protegido
+
             for i in range(0, len(Protegido)):
                 arr = np.delete(arr, np.where(arr == Protegido[i])[0][0], axis=0)
 
@@ -157,6 +144,7 @@ def Ocupacion(band, can, baja, alta, condiciones, SerPer, concecionado):
 
 
         ################ Inicio Quitar Espectro de Frontera
+
             for i in range(0, len(Frontera)):
                 arr = np.delete(arr, np.where(arr == Frontera[i])[0][0], axis=0)
 
@@ -177,17 +165,15 @@ def Ocupacion(band, can, baja, alta, condiciones, SerPer, concecionado):
 
         ################ Inicio Buscar CNAF
 
-        # Buscamos los limites el los que se cumple el segmento
+        # Buscamos los limites el los que se cumple el segmento.
         Lmin  = np.where(csv_tablas[band+'.Cnaf.B'] >= baja)[0][0]
 
         Lmax  = len(np.where(csv_tablas[band+'.Cnaf.A'] <= alta)[0])
 
-        # Columna de los servicios en el CNAF
+        # Columna de los servicios en el CNAF.
         lisevis = list(csv_tablas[band+'.Cnaf.Ser'][Lmin:Lmax])
 
-        # Buscamos si es que existe la palabra Móvil en la columna '>' o buscamos las que no pertenecen '=='
-        # Noservis = [ i+Lmin for i in range(0, len(lisevis)) if lisevis[i].split(" | ").count('Móvil') > 0 ]
-
+        # Buscamos si es que existe la palabra Móvil en la columna '>' o buscamos las que no pertenecen '=='.
         Noservis=[]
 
         for i in range(0, len(SerPer)):
@@ -195,23 +181,23 @@ def Ocupacion(band, can, baja, alta, condiciones, SerPer, concecionado):
 
             for j in range(0, len(SerTemp)): Noservis.append(SerTemp[j])
 
-        # Eliminamos las columnas que estan dadas de alta al servicio movil y reiniciamos los indices
+        # Eliminamos las columnas que estan dadas de alta al servicio movil y reiniciamos los indices.
         csv_tablas = pd.DataFrame(csv_tablas).drop(Noservis,axis=0).reset_index(drop=True)
 
-        # Buscamos los nuevos limites que cumplan con el segmento
+        # Buscamos los nuevos limites que cumplan con el segmento.
         Lmin  = np.where(csv_tablas[band+'.Cnaf.B'] >= baja)[0][0]
 
         Lmax  = len(np.where(csv_tablas[band+'.Cnaf.A'] <= alta)[0])
 
-        # Buscamos los limites el las columanas de los segmentos altos y bajos y creamos sublistas con estos elementos
+        # Buscamos los limites el las columanas de los segmentos altos y bajos y creamos sublistas con estos elementos.
         segBajas = csv_tablas[band+'.Cnaf.B'][Lmin:Lmax]
 
         segAltas = csv_tablas[band+'.Cnaf.A'][Lmin:Lmax]
 
-        # Creamos la estructura de los datos como una lista de tuplas para los segmentos
+        # Creamos la estructura de los datos como una lista de tuplas para los segmentos.
         CNAF = list(zip(segBajas,segAltas))
 
-        # Creamos la estructura de los datos como una lista de tuplas para los servicios
+        # Creamos la estructura de los datos como una lista de tuplas para los servicios.
         movil = [
             tuple(list(csv_tablas[band+'.Cnaf.Ser'][Lmin:Lmax])[i].split(" | ")) 
             for i in range(0, len(csv_tablas[band+'.Cnaf.Ser'][Lmin:Lmax]))
@@ -265,7 +251,7 @@ def InfoOcupacion(arr, Libre, Protegido, Maritimo, Frontera, CNAF, Servicios, Co
 
     wb = Workbook()
     ws = wb.active
-    
+
     ofs = 1
     
     for row in range(0, len(arr)):
@@ -299,4 +285,6 @@ def InfoOcupacion(arr, Libre, Protegido, Maritimo, Frontera, CNAF, Servicios, Co
                                     'Sistema Móvil Marítimo',
                                     'Espectro de Frontera',
                                     'CNAF',
-                                    'Servicios'])
+                                    'Servicios',
+                                ]
+                    )

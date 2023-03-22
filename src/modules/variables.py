@@ -1,7 +1,10 @@
+ETIQUETA_1 = "*"
+ETIQUETA_2 = "+"
+
 header_tablas = { 
     'border': '1px solid rgb(63,63,63)', 
     'background-color': 'rgb(14, 16, 18)', 
-    'color':'#A0AABA' 
+    'color':'#A0AABA'
 }
 
 cell_tablas = { 
@@ -23,7 +26,7 @@ style_graf = {
     'paper_bgcolor': '#161A1D',
     'font': {
         'color': '#A0AABA'
-    }, 
+    },
 }
 
 style_graf_S = {
@@ -49,6 +52,12 @@ style_tabla = {
     'height': '390px'
 }
 
+
+style_data_condition = {
+    "if": {"state": "selected"},              # 'active' | 'selected'
+    "backgroundColor": "rgba(0, 116, 217, 0.3)",
+    "border": "1px solid rgba(33,134,244,0.5)",
+}
 
 data_table = {
     # 'width': '150px',

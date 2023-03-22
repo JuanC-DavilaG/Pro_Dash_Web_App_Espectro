@@ -73,7 +73,6 @@ def leer_csv(csv_reader):
         
         return temp
 
-        
     iP = csv_reader[0].index("PIRE Máxima de la Estación (dBW)")
 
     iBw = csv_reader[0].index("Ancho de Banda de Canal (kHz)")
@@ -83,8 +82,6 @@ def leer_csv(csv_reader):
     iTx = csv_reader[0].index("Frecuencias Tx (MHz)")
 
     iCon = csv_reader[0].index("Razón Social Titular")
-
-
 
     p = [csv_reader[i][iP] for i in range(1, len(csv_reader[1:]))]
 

@@ -3,7 +3,7 @@
     padding: 0;
 }
 
-#entrada_siaer, #entrada_propuesta{
+#entrada_ET1, #entrada_ET2{
     height: 80px;
     border-width: 1px;
     line-height: 60px;
@@ -15,6 +15,7 @@
     color: white;
     cursor: pointer;
 }
+
 #datatable-upload-container{
     width: 100%;
     left: 2px;
@@ -44,8 +45,7 @@
 }
 
 #Servis-dropdown .Select .Select-control{
-    
-    /* font-size: 15px; */
+
     background-color: #555;
     border-color: rgb(63,63,63);
     color: #A0AABA;
@@ -60,10 +60,9 @@
 }
 
 .Select-menu-outer{
-    background-color: #555;
-    border-color: rgb(63,63,63);
-    color: #A0AABA;
-
+    background-color: #555 !important;
+    border-color: rgb(63,63,63) !important;
+    color: #A0AABA !important;
 }
 
 #Servis-dropdown .Select .Select-control #react-select-2--value .Select-value{
@@ -78,7 +77,6 @@
 }
 
 ::placeholder{
-
         color: #555;
     }
 
@@ -96,6 +94,14 @@
     left: 0%;
     padding: 0px 0px 0px 2px;
 
+}
+
+.dash-table-container 
+.dash-spreadsheet-container 
+.dash-spreadsheet-inner table {
+    --accent: #1EAEDB !important;
+    --text-color: white !important;
+    --hover: rgba(244, 33, 128, 0.212) !important;
 }
 
 .dash-spreadsheet-container.dash-spreadsheet.dash-empty-01.dash-fill-width::-webkit-scrollbar{

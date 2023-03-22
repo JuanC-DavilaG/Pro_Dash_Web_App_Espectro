@@ -30,7 +30,7 @@ opcionesCEs_1 = [
                 {"label": "Otros", "value": "O"},
             ]
 
-dash.register_page(__name__, path='/analisis', name='Análisis', order=1)
+dash.register_page(__name__, path='/analisis', name='Analizar', order=1)
 
 layout = html.Div([
 
@@ -44,11 +44,12 @@ layout = html.Div([
                     children=html.Div([
                         'Arrastrar y soltar o ',
                         html.A('Seleccionar archivo'),
-                        ' SIAER'
+                        ' ' + ETIQUETA_1
                     ]),
                 )
-            ], id='entrada_siaer')
+            ], id='entrada_ET1')
         ),
+
         dbc.Col(
             html.Div([
                 dcc.Upload(
@@ -57,11 +58,10 @@ layout = html.Div([
                     children=html.Div([
                         'Arrastrar y soltar o ',
                         html.A('Seleccionar archivo'),
-                        ' Propuesta'
+                        ' ' + ETIQUETA_2
                     ]),
                 )
-            ], id='entrada_propuesta')
-
+            ], id='entrada_ET2')
         ),
         
     ],
@@ -79,13 +79,14 @@ layout = html.Div([
                     style_table = style_tabla,
                     style_header = header_tablas,
                     style_cell = cell_tablas,
-                    style_data = data_table,
+                    style_data_conditional=[style_data_condition],
                     editable=True, 
                     row_deletable=True, 
                     page_size=12,
                 ),
             ]), style={"width": "33.33%"}
         ),
+
         dbc.Col([
             dbc.Row([
                 dbc.Col(
@@ -107,6 +108,7 @@ layout = html.Div([
                             dbc.Input(id="int-can", placeholder="Canalización", type="text", style={'padding': '1px','width': "90%", 'color': '#A0AABA', 'backgroundColor': '#555', 'borderColor': 'rgb(63,63,63)', 'margin': '0 5px 0 0'}),
                         ),
                     ])
+
                 ),
                 dbc.Col(
                     dbc.Select(
@@ -120,23 +122,18 @@ layout = html.Div([
                         ],
                     )
                 ),
+
             ]),
             dbc.Row([
                 dbc.Col([
                     dbc.Row([
                         dbc.Col(html.P("Segmento", style={'margin': '10px'}), width="auto", style={'color': '#A0AABA', 'padding': '0 0 0 38%'}),
-
                     ], style={'padding':'0 0 0 0%'}),
-
                     dbc.Row([
                             dbc.Input(id="seg_bajo", placeholder="Bajo", type="text", style={'width': "48%", 'color': '#A0AABA', 'backgroundColor': '#555', 'borderColor': 'rgb(63,63,63)', 'margin': '0 5px 0 0'}),
-
                             dbc.Input(id="seg_alto", placeholder="Alto", type="text", style={'width': "48%", 'color': '#A0AABA', 'backgroundColor': '#555', 'borderColor': 'rgb(63,63,63)'}),
-
                     ], style={"padding": "0px 0 0 15px"}),
-
                     dbc.Row([
-
                         dcc.Dropdown(
                                     ['Móvil', 
                                     'Móvil por satélite (Tierra-Espacio)', 
@@ -150,22 +147,21 @@ layout = html.Div([
                                     multi=True, 
                                     style=servis_dropdown),
                                     
-
                     ]),
-
                 ]),
+
                 dbc.Col(
                     dbc.Row([
                         dbc.Col([
                             dbc.Checklist(options = [{"label": "Todo", "value": "T", "disabled": True}], value = [], id="CEs",
-                                                       input_checked_style={
+                                                    input_checked_style={
                                                             "backgroundColor": "rgba(33,134,244,0.5)",
                                                             "borderColor": "#555",
                                                         },
                                                         label_checked_style={"color": "rgba(33,134,244,0.5)"},
                                                         inline=True),
                             dbc.Checklist(options = opcionesCEs_0, value=[], id="OpCEs_0",
-                                                       input_checked_style={
+                                                    input_checked_style={
                                                             "backgroundColor": "rgba(33,134,244,0.5)",
                                                             "borderColor": "#555",
                                                         },
@@ -191,19 +187,24 @@ layout = html.Div([
                     dbc.Button( "Guardar", active=True, id="btn-G", n_clicks=0, disabled=True),
                     dcc.Download(id="download-proposal"),
                 ]),
+
                 dbc.Col([
                     dbc.Button("Reporte", active=True, id="btn-R", n_clicks=0, disabled=False),
                     dcc.Download(id="download-reporte"),
                 ]),
+
                 dbc.Col([
                     dbc.Button("Ocupación", active=True, id="btn-O", n_clicks=0, disabled=False),
                     dcc.Download(id="download-ocupacion"),
                 ]),
+
                 dbc.Col([
                     dbc.Button("Iniciar", active=True, id="btn-I", n_clicks=0, disabled=True),
                 ]),
+
             ], style={"padding": "20px 0 0 0"}),
         ], style={"width": "33.33%", "padding": "6px 6px 6px 6px"}),
+
         dbc.Col(
             html.Div([
                 dash_table.DataTable(id='datatable-upload-1-container',
@@ -212,19 +213,21 @@ layout = html.Div([
                     style_header = header_tablas,
                     style_cell = cell_tablas, 
                     style_data = data_table,
+                    style_data_conditional=[style_data_condition],
                     editable=True, 
                     row_deletable=True, 
                     page_size=12,
                 ),
-                
             ]), style={"width": "33.33%"}
         ),
     ],
+
     className="tables_SP",),
     dbc.Row( # Tabla de resultados 
         dbc.Col(
             html.Div(id='tab_r')
         ),
+
     className="table_result")
 ])
 
@@ -270,7 +273,7 @@ def analizar_contenido(contents, filename):
 )
 def update_output(contents, filename):
     if contents is None:
-        return [{}], []
+        return [], []
     df_S = parse_contents(contents, filename)
 
     df_S = df_S.rename_axis('#').reset_index()
@@ -291,7 +294,7 @@ def update_output(contents, filename, btnG):
     diccionario = {}
 
     if contents is None:
-        return [{}], [], True
+        return [], [], True
     df_P = analizar_contenido(contents, filename)
 
     df_P = df_P.rename_axis('#').reset_index()
@@ -308,6 +311,7 @@ def update_output(contents, filename, btnG):
     State('datatable-upload-graph', 'figure'),
 )
 def display_graph(rowsS, rowsP, value, fig):
+
     df_S = pd.DataFrame(rowsS)
     df_P = pd.DataFrame(rowsP, dtype = 'float64')
 
@@ -346,7 +350,7 @@ def display_graph(rowsS, rowsP, value, fig):
 
                 'x': df_GS[df_GS.columns[0]][i],
                 'y': df_GS[df_GS.columns[1]][i],
-                'name': 'SIAER',
+                'name': ETIQUETA_1,
                 'showlegend': False,
                 'mode': 'lines',
                 'opacity': 0.9,
@@ -391,7 +395,7 @@ def display_graph(rowsS, rowsP, value, fig):
 
                 'x': df_GP[df_GP.columns[0]][i],
                 'y': df_GP[df_GP.columns[1]][i],
-                'name': 'Propuesta',
+                'name': ETIQUETA_2,
                 'showlegend': False,
                 'mode': 'lines',
                 'opacity': 0.9,
@@ -460,7 +464,7 @@ def guardarPropuesta(n, rowsP):
 
     elif (n > 0):
 
-        return dcc.send_data_frame(df_P.set_index('#').to_csv, "propuesta_"+str(n)+"_.csv")
+        return dcc.send_data_frame(df_P.set_index('#').to_csv, ETIQUETA_2 + "_"+str(n)+"_.csv")
 
 @callback(
     Output("download-ocupacion", "data"),
@@ -488,7 +492,7 @@ def analizar(n, can, ban, bajo, alto, OpCEs_0, OpCEs_1, SerPer, rowO):
         con = pd.DataFrame(rowO)['Frecuencias'].drop_duplicates().reset_index()
 
         df_O = Ocupacion(ban, float(can), float(bajo), float(alto), OpCEs_0+OpCEs_1, SerPer, con)
-        
+
         return dcc.send_data_frame(df_O.to_excel, "Ocupación_"+format+".xlsx", index = False, sheet_name='Reporte de Ocupación')
 
 
@@ -501,7 +505,7 @@ def analizar(n, can, ban, bajo, alto, OpCEs_0, OpCEs_1, SerPer, rowO):
 def analizar(n, rowS, rowP):
 
     if n is None:
-        
+
         return []
 
     elif (n > 0):
@@ -513,7 +517,6 @@ def analizar(n, rowS, rowP):
         dfP = pd.DataFrame(rowP)
 
         df = EstudioDeInvacion(dfS, dfP)
-
 
         return dcc.send_data_frame(df.to_excel, "Reporte_"+format+".xlsx", index = False, sheet_name="Reporte de disponibilidad")
 
