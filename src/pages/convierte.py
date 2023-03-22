@@ -19,8 +19,6 @@ from shapely import LineString
 from shapely.geometry.polygon import Polygon
 import zipfile
 
-import os
-
 dash.register_page(__name__, path='/Convierte', name='Convertir', order=2)
 
 layout = html.Div(
@@ -536,12 +534,7 @@ def analizar(n, textKML, TipoS, Tipo, row):
         poly = convertSHP(df)
 
         gdf = gpd.GeoDataFrame(index=[0], crs='epsg:4326', geometry=[poly])
-###############
-        ruta = os.getcwd()
 
-        print(ruta )
-        print(os.listdir(ruta ))
-#################
         gdf.to_file("./temp/file.shp.zip", driver='ESRI Shapefile', mode="w")
 
         return dcc.send_file("./temp/file.shp.zip")
