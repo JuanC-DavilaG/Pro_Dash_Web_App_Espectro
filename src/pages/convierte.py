@@ -68,14 +68,12 @@ layout = html.Div(
 
             html.Div([
                 dash_table.DataTable(id='CsvData',
-                    page_action='none',
                     style_table = style_tabla,
                     style_header = header_tablas,
                     style_cell = cell_tablas,
                     style_data_conditional=[style_data_condition],
                     editable=True, 
-                    row_deletable=True, 
-                    page_size=12,
+                    row_deletable=True,
                 ),
                 
             ]),
