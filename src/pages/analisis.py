@@ -19,14 +19,14 @@ from flask import send_file
 import os
 
 opcionesCEs_0 = [
-                {"label": "E. Libre", "value": "L"}, 
-                {"label": "E. Protegido", "value": "P"}, 
+                {"label": "Libre", "value": "L"}, 
+                {"label": "Protegido", "value": "P"}, 
                 {"label": "S.M.M", "value": "S"},
             ]
 
 opcionesCEs_1 = [
-                {"label": "E. Fronteras", "value": "F"}, 
-                {"label": "CNAF", "value": "C"},
+                {"label": "Fronteras", "value": "F"}, 
+                {"label": "Determinado", "value": "C"},
                 {"label": "Otros", "value": "O"},
             ]
 
