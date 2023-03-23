@@ -20,6 +20,12 @@
     padding: 5px 10px 5px 10px;
 }
 
+#dropEntrada .Select-value .Select-value-label, 
+#dropSalida .Select-value .Select-value-label, 
+#dropTipo .Select-value .Select-value-label{
+    color: #A0AABA;
+}
+
 #checkEncabezado{
     display: flex;
 
@@ -77,6 +83,26 @@ label{
     --accent: #1EAEDB !important;
     --text-color: white !important;
     --hover: rgba(244, 33, 128, 0.212) !important;
+}
+
+.previous-next-container .page-number {
+    color: #A0AABA;
+}
+
+.previous-next-container .page-number .current-page-container input.current-page{
+background-color: rgba(63, 63, 63, 0.723) !important;
+}
+
+.dash-table-container .previous-next-container .page-number .current-page-container .current-page-shadow, .dash-table-container .previous-next-container .page-number .current-page-container input.current-page{
+    border-bottom: none !important;
+}
+
+.previous-next-container .first-page,
+.previous-next-container .previous-page,
+.previous-next-container .next-page,
+.previous-next-container .last-page{
+    background-color: transparent;
+    color: white;
 }
 
 #txtOutput{
