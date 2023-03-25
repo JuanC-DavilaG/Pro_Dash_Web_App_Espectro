@@ -15,12 +15,17 @@
 
 }
 
-#dropEntrada, #dropSalida, #dropTipo{
+#dropEntrada{
+
+    margin-right: 10px;
+
+}
+
+#dropSalida, #dropTipo{
     width: 135px;
     padding: 5px 10px 5px 10px;
 }
 
-#dropEntrada .Select-value .Select-value-label, 
 #dropSalida .Select-value .Select-value-label, 
 #dropTipo .Select-value .Select-value-label{
     color: #A0AABA;
@@ -145,7 +150,6 @@ background-color: rgba(63, 63, 63, 0.723) !important;
     grid-area: pas2;
 }
 
-#dropEntrada .Select .Select-control, 
 #dropSalida .Select .Select-control, 
 #dropTipo .Select .Select-control{
     background-color: #555;
