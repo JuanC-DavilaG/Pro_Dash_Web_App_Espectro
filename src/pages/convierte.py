@@ -24,13 +24,7 @@ dash.register_page(__name__, path='/Convierte', name='Convertir', order=2)
 layout = html.Div(
     [
         html.Div([
-            html.Label(id="DE", children='De: '),
-            dcc.Dropdown(
-                ['kml', 'csv', 'shp'],
-                'csv',
-                clearable=False,
-                id="dropEntrada"
-            ),
+            html.P(id="DE", children=html.Div([html.Label(children="De: "), " ", html.Strong(id="dropEntrada", children="Sin archivo")])),
             html.Label(id="A", children='A: '),
             dcc.Dropdown(
                 ['kml', 'shp', 'csv'],
@@ -54,7 +48,7 @@ layout = html.Div(
                 ], id="checkEncabezado"),
 
         html.Div([
-            html.P(id="paso1", children=html.Div([html.Strong(children="Paso 1:"),' Cargue su archivo ', html.Label(children="CSV", id="tipoEntrada1")])),
+            html.P(id="paso1", children=html.Div([html.Strong(children="Paso 1:"),' Cargue su archivo '])),
             dcc.Upload(
                 id='files',
                 children=html.Div([
@@ -274,12 +268,12 @@ def analizar_contenido(contents, filename):
 
         # Supongamos que el usuario cargó un archivo CSV.
         return pd.read_csv(
-            io.StringIO(decoded.decode('utf-8')))
+            io.StringIO(decoded.decode('utf-8'))), 'CSV'
             
     elif 'xls' in filename:
 
         # Supongamos que el usuario cargó un archivo de Excel.
-        return pd.read_excel(io.BytesIO(decoded))
+        return pd.read_excel(io.BytesIO(decoded)), 'XLS'
 
     elif 'kml' in filename:
 
@@ -317,11 +311,10 @@ def analizar_contenido(contents, filename):
                     dates[i].append(float('nan'))
                     dates[i].append(float('nan'))
             
-        return pd.DataFrame(dates, columns=heads)
+        return pd.DataFrame(dates, columns=heads), 'KML'
 
 @callback(
-    [Output('tipoEntrada1', 'children'),
-    Output('tipoEntrada2', 'children'),
+    [Output('tipoEntrada2', 'children'),
     Output('tipoEntrada3', 'children'),
     Output('tipoSalida1', 'children'),
     Output('tipoSalida2', 'children'),
@@ -330,13 +323,13 @@ def analizar_contenido(contents, filename):
     Output('btn-O', 'children'),
     Output('btn-1', 'children'),
     ],
-    [Input('dropEntrada', 'value'),
+    [Input('dropEntrada', 'children'),
     Input('dropSalida', 'value'),
     ],
 )
 def tipo_entradas(typeInput, typeOuput):
 
-    tipoE = [typeInput.upper() for i in range(3)]
+    tipoE = [typeInput.upper() for i in range(2)]
     
     tipoS = [typeOuput.upper() for i in range(4)]
 
@@ -351,24 +344,26 @@ def tipo_entradas(typeInput, typeOuput):
 @callback(
     [Output('CsvData', 'data'),
     Output('CsvData', 'columns')],
+    Output('dropEntrada', 'children'),
     [Input('files', 'contents'),
     State('files', 'filename')],
+    prevent_initial_call=False,
 )
 def update_output(contents, filename):
 
     if contents is None:
-        return [], []
+        return [], [], dash.no_update
 
-    df = analizar_contenido(contents, filename)
+    df, tipo = analizar_contenido(contents, filename)
 
     df = df.rename_axis('#').reset_index()
 
-    return df.to_dict('records'), [{"name": i, "id": i, 'deletable': True, 'renamable': True} for i in df.columns]
+    return df.to_dict('records'), [{"name": i, "id": i, 'deletable': True, 'renamable': True} for i in df.columns], tipo
 
 #Representación en TextArea salida
 @callback(
     Output('txtOutput', 'value'),
-    [Input('dropEntrada', 'value'),
+    [Input('dropEntrada', 'children'),
     Input('dropSalida', 'value'),
     Input('dropTipo', 'value'),
     Input("btn-O", "n_clicks")],
