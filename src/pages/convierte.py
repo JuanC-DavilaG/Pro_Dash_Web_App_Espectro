@@ -377,6 +377,8 @@ def guardarPropuesta(tipoE, tipoS, tipoT, n, row):
         return ""
 
     elif (n > 0):
+        
+        tipoE = tipoE.lower()
 
         df = pd.DataFrame(row)
 
