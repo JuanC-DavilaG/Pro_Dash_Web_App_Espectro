@@ -1,0 +1,29 @@
+@import './Styles/home.css';
+@import './Styles/convert.css';
+@import './Styles/carriers.css';
+@import './Styles/maps.css';
+@import './Styles/tables.css';
+
+body{
+    background-color:#161A1D;
+}
+
+.dropdown-menu{
+    background-color: rgba(64, 64, 64);
+}
+
+.show .dropdown-item{
+    color: #A0AABA !important;
+}
+
+.show .dropdown-item:hover{
+    color: #1d1d1d !important;
+}
+
+#barra_navegacion{
+    justify-content: center !important;
+}
+
+#barra_navegacion .container{
+    margin-left: 0 !important;
+}
