@@ -1,5 +1,5 @@
 ETIQUETA_1 = "SIAER"
-ETIQUETA_2 = "Propuesta"
+ETIQUETA_2 = "Solicitud"
 
 header_tablas = { 
     'border': '1px solid rgb(63,63,63)', 
