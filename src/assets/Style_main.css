@@ -1,7 +1,7 @@
 @import './Styles/home.css';
 @import './Styles/convert.css';
 @import './Styles/carriers.css';
-/* @import './Styles/maps.css'; */
+@import './Styles/maps.css';
 @import './Styles/tables.css';
 
 body{
