@@ -60,14 +60,17 @@ offcanvas = html.Div(
         dbc.Offcanvas(
             html.Div(
                 [
-                    dmc.Select(
-                        label="Seleciona el mapa",
-                        placeholder="Seleciona uno",
-                        id="framework-select",
-                        value=capaMap[0]["value"],
-                        data=capaMap,
-                        style={"width": 200, "marginBottom": 10},
-                    ),
+                    # dmc.Select(
+                    #     label="Seleciona el mapa",
+                    #     placeholder="Seleciona uno",
+                    #     id="framework-select",
+                    #     value=capaMap[0]["value"],
+                    #     data=capaMap,
+                    #     style={"width": 200, "marginBottom": 10},
+                    # )
+                    dcc.Dropdown(options=capaMap, 
+                                 value=capaMap[0]["value"], 
+                                 id="framework-select",),
 
                     dcc.Upload(
                         id='files',
