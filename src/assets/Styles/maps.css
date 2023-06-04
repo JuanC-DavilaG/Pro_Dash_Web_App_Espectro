@@ -18,3 +18,22 @@
 .offcanvas-header .btn-close{
     background-color: rgb(64, 64, 64);
 }
+
+#framework-select .Select-control{
+    background-color: #555;
+    border-color: rgb(63,63,63);
+    color: #A0AABA !important;
+}
+
+#framework-select .Select-control .Select-value-label{
+    color: #FFFFFF;
+}
+
+#files{
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+#progress_bar{
+    background-color: rgb(14, 16, 18) !important;
+}
