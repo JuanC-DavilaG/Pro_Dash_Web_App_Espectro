@@ -374,7 +374,7 @@ def display_graph(rowsS, rowsP, value, fig):
 
     datos=[]
 
-    definicion = 26
+    definicion = 25
 
     if(not(df_S.empty) or len(df_S.columns) >= 1):
 
