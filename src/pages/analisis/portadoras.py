@@ -91,7 +91,7 @@ layout = html.Div([
                             dbc.Checklist(
                                 id='check-rangeslider',
                                 options=[{'label': 'Deslizador', 
-                                        'value': 'slider'}],
+                                        'value': 'slider', "disabled": True}],
                                 input_checked_style={
                                 "backgroundColor": "rgba(33,134,244,0.5)",
                                 "borderColor": "#555",
