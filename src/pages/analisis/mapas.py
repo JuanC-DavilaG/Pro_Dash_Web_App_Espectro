@@ -3,7 +3,7 @@ from dash import dcc
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html, callback
 from dash.exceptions import PreventUpdate
-# import dash_mantine_components as dmc
+import dash_mantine_components as dmc
 from dash_iconify import DashIconify
 import plotly.graph_objects as go
 import numpy as np
