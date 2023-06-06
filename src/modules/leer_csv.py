@@ -1,12 +1,14 @@
 def leer_csv(csv_reader):
 
-    def listCor(lista, tamaño):
+    def listCor(lista, posicion):
         l=[]
         D = " | "
 
-        for i in range(1,len(lista[1:])+1):
+        longitud = len(lista[1:])+1 if(len(lista[1:])+1<=2) else len(lista[1:])
+
+        for i in range(1,longitud):
             H=[]
-            T = lista[i][tamaño]
+            T = lista[i][posicion]
             
             if T.count("|") > 0: D = "|"
                 
@@ -24,10 +26,10 @@ def leer_csv(csv_reader):
         
 
     def listasP(lista, tamaño):
-        
+
         temp = []
-        j=0
-        for elemento_1 in lista:
+
+        for j, elemento_1 in enumerate(lista):
         
             for i in tamaño[j]:
                 
@@ -37,16 +39,14 @@ def leer_csv(csv_reader):
                 else:
                     
                     temp.append(float(elemento_1))
-                    
-            j+=1
-                    
+
         return temp
                 
     def listasC(lista, tamaño):
         
         temp = []
-        j=0
-        for elemento_1 in lista:
+
+        for j, elemento_1 in enumerate(lista):
         
             for i in tamaño[j]:
                 
@@ -56,9 +56,7 @@ def leer_csv(csv_reader):
                 else:
                     
                     temp.append(elemento_1)
-                    
-            j+=1
-                    
+
         return temp
 
     def listasF(lista):
@@ -89,7 +87,12 @@ def leer_csv(csv_reader):
 
     c = []
 
-    for i in range(1, len(csv_reader[1:])+1):
+    longitud = len(csv_reader[1:])+1 if(len(csv_reader[1:])+1<=2) else len(csv_reader[1:])
+
+    print()
+
+    for i in range(1, longitud):
+        # print(i, iP)
         p.append(csv_reader[i][iP])
         bw.append(csv_reader[i][iBw])
         c.append(csv_reader[i][iCon])
