@@ -91,7 +91,7 @@ layout = html.Div([
                             dbc.Checklist(
                                 id='check-rangeslider',
                                 options=[{'label': 'Deslizador', 
-                                        'value': 'slider', "disabled": True}],
+                                        'value': 'slider', 'disabled': True}],
                                 input_checked_style={
                                 "backgroundColor": "rgba(33,134,244,0.5)",
                                 "borderColor": "#555",
@@ -374,7 +374,7 @@ def display_graph(rowsS, rowsP, value, fig):
 
     datos=[]
 
-    definicion = 25
+    definicion = 26
 
     if(not(df_S.empty) or len(df_S.columns) >= 1):
 
