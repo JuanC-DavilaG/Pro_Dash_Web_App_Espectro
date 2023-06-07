@@ -26,14 +26,14 @@
     padding: 0 0 0 10px;
 }
 
-#check-rangeslider, #CEs, #OpCEs_0, #OpCEs_1{
+#VerServicios, #CEs, #OpCEs_0, #OpCEs_1{
     color: #A0AABA;
     padding: 0% 0%  0% 3%;
     font-size: 15px;
     border-color: rgb(63,63,63);
 }
 
-#check-rangeslider #_dbcprivate_checklist_check-rangeslider_input_slider, 
+#VerServicios #_dbcprivate_checklist_VerServicios_input_View, 
 #CEs #_dbcprivate_checklist_CEs_input_T,
 #OpCEs_0 #_dbcprivate_checklist_OpCEs_0_input_L,
 #OpCEs_0 #_dbcprivate_checklist_OpCEs_0_input_P,
