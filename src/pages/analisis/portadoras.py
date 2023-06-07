@@ -89,15 +89,15 @@ layout = html.Div([
                     dbc.Row([
                         dbc.Col(
                             dbc.Checklist(
-                                id='check-rangeslider',
-                                options=[{'label': 'Deslizador', 
-                                        'value': 'slider', 'disabled': True}],
+                                id='VerServicios',
+                                options=[{'label': 'Ver servicios', 
+                                        'value': 'View', 'disabled': True}],
                                 input_checked_style={
                                 "backgroundColor": "rgba(33,134,244,0.5)",
                                 "borderColor": "#555",
                                 },
                                 label_checked_style={"color": "rgba(33,134,244,0.5)"},
-                                value=[''],
+                                value=[],
                             ),
                         ),
                         dbc.Col(
@@ -280,16 +280,18 @@ def analizar_contenido(contents, filename):
      Output('select_band',"disabled"), Output('seg_bajo',"disabled"),
      Output('seg_alto',"disabled"), Output('Servis-dropdown',"disabled"),
      Output('OpCEs_0', 'options'), Output('OpCEs_1', 'options'),
+     Output('VerServicios', 'options'), 
      Output('datatable-upload', 'contents'), 
      Output('datatable-upload-1', 'contents'),],
     [Input('datatable-upload', 'contents'), 
      Input('datatable-upload-1', 'contents'),],
     [State('datatable-upload', 'filename'),
      State('datatable-upload-1', 'filename'),
+     State('VerServicios', 'options'),
      State('OpCEs_0', 'options'), State('OpCEs_1', 'options'),
      ],
      prevent_initial_call=True,)
-def update_output(contentsS, contentsP, filenameS, filenameP, Ops0, Ops1):
+def update_output(contentsS, contentsP, filenameS, filenameP, Vserv, Ops0, Ops1):
 
     if contentsS is None and contentsP is None: raise PreventUpdate
 
@@ -298,32 +300,46 @@ def update_output(contentsS, contentsP, filenameS, filenameP, Ops0, Ops1):
     if filenameS is not None and filenameP is not None:
         actBtnR = False
 
-        for i in range(len(Ops0)):
-            Ops0[i]['disabled'] = False
-
-        for i in range(len(Ops1)):
-            Ops1[i]['disabled'] = False
-
-
     if contentsS is not None:
         df_S = parse_contents(contentsS, filenameS)
         df_S = df_S.rename_axis('#').reset_index()
 
+        if filenameS is not None and filenameP is None:
+
+            Vserv[0]['disabled'] = False
+
+            for i in range(len(Ops0)):
+                Ops0[i]['disabled'] = False
+
+            for i in range(len(Ops1)):
+                Ops1[i]['disabled'] = False
+
+
         return (df_S.to_dict('records'), 
                 [{"name": i, "id": i, 'deletable':True, 'renamable': True} for i in df_S.columns],
                 no_update, no_update, no_update, actBtnR, False, False, False, False, 
-                False, False, Ops0, Ops1, None, None)
+                False, False, Ops0, Ops1, Vserv, None, None)
 
     if contentsP is not None:
         df_P = analizar_contenido(contentsP, filenameP)
         df_P = df_P.rename_axis('#').reset_index()
+
+        if filenameS is None and filenameP is not None:
+
+            Vserv[0]['disabled'] = False
+
+            for i in range(len(Ops0)):
+                Ops0[i]['disabled'] = False
+
+            for i in range(len(Ops1)):
+                Ops1[i]['disabled'] = False
 
         return (no_update, 
                 no_update, 
                 df_P.to_dict('records'), 
                 [{"name": i, "id": i, 'deletable': True, 'renamable': True} for i in df_P.columns], 
                 False, actBtnR, no_update, no_update, no_update, no_update, 
-                no_update, no_update, Ops0, Ops1, None, None)
+                no_update, no_update, Ops0, Ops1, Vserv, None, None)
 
 def genFig(datos):
 
@@ -352,10 +368,9 @@ def genFig(datos):
     Output('datatable-upload-graph', 'figure'),
     Input('datatable-upload-container', 'data'),
     Input('datatable-upload-1-container', 'data'),
-    Input("check-rangeslider", "value"),
     State('datatable-upload-graph', 'figure'),
 )
-def display_graph(rowsS, rowsP, value, fig):
+def display_graph(rowsS, rowsP, fig):
 
     if (fig is None):
 
@@ -467,8 +482,7 @@ def display_graph(rowsS, rowsP, value, fig):
 
     newFig.update_layout(xaxis=dict(
                                     linecolor='rgba(0,0,0, 0)',
-                                    rangeslider=dict(visible=False)),
-                        xaxis_rangeslider_visible='slider' in value)
+                                    rangeslider=dict(visible=False)))
 
     return newFig
 
@@ -477,200 +491,203 @@ def display_graph(rowsS, rowsP, value, fig):
 # Genera una visualización de la planeacion espectrar en la zona de visualización
 @callback(
         Output('datatable-upload-graph', 'figure', allow_duplicate=True),
+        Input('VerServicios', 'value'),
         Input('OpCEs_0', 'value'), 
         Input('OpCEs_1', 'value'),
         State('datatable-upload-graph', 'figure'),
         prevent_initial_call=True,
 )
-def grafPlanE(Ops0, Ops1, fig):
+def grafPlanE(Vserv, Ops0, Ops1, fig):
 
     if(fig is None): raise PreventUpdate
 
-    
+    if('View' in Vserv):
 
-    Ops = Ops0 + Ops1
+        Ops = Ops0 + Ops1
 
-    if(Ops == []):
-        trigger = len(ctx.triggered_prop_ids)
-        if(trigger<2): return genFig(fig.get('data', []))
+        if(Ops == []):
+            trigger = len(ctx.triggered_prop_ids)
+            if(trigger<2): return genFig(fig.get('data', []))
 
-        return no_update
+            return no_update
 
-    global checkAct
+        global checkAct
 
-    checkAct = dict(map(lambda x: (x[0], False), checkAct.items()))
+        checkAct = dict(map(lambda x: (x[0], False), checkAct.items()))
 
-    fig = go.Figure(fig)
+        fig = go.Figure(fig)
 
-    dataTrazos = TraceInfoData(fig)
-    trazos_actuales = dataTrazos.traces
+        dataTrazos = TraceInfoData(fig)
+        trazos_actuales = dataTrazos.traces
 
-    layoutTrazos = TraceInfoLayout(fig)
-    layout_actual = layoutTrazos.traces
-    segmento = layoutTrazos.tamView
+        layoutTrazos = TraceInfoLayout(fig)
+        layout_actual = layoutTrazos.traces
+        segmento = layoutTrazos.tamView
 
-    shapesActivos = set(layoutTrazos.names)
-    shapeSeleccionado = set(Ops)
+        shapesActivos = set(layoutTrazos.names)
+        shapeSeleccionado = set(Ops)
 
-    keep = shapesActivos & shapeSeleccionado
-    delete = shapesActivos ^ keep
-    new = keep ^ shapeSeleccionado
+        keep = shapesActivos & shapeSeleccionado
+        delete = shapesActivos ^ keep
+        new = keep ^ shapeSeleccionado
 
-    newFig = genFig(trazos_actuales)
+        newFig = genFig(trazos_actuales)
 
-    csv_tablas = traerData()
+        csv_tablas = traerData()
 
-    for Abreviatura in rangosRF_MHz: 
-        if(rangosRF_MHz[Abreviatura][0] <= segmento[0] and segmento[1] < rangosRF_MHz[Abreviatura][1]): band = Abreviatura 
+        for Abreviatura in rangosRF_MHz: 
+            if(rangosRF_MHz[Abreviatura][0] <= segmento[0] and segmento[1] < rangosRF_MHz[Abreviatura][1]): band = Abreviatura 
 
-    if('L' in Ops and not checkAct['L']):
-        checkAct['L'] = True
-        
-        Lb_B = csv_tablas[csv_tablas[band+'.Lib.B'].notna()][band+'.Lib.B']
+        if('L' in Ops and not checkAct['L']):
+            checkAct['L'] = True
+            
+            Lb_B = csv_tablas[csv_tablas[band+'.Lib.B'].notna()][band+'.Lib.B']
 
-        Lb_A =  csv_tablas[csv_tablas[band+'.Lib.A'].notna()][band+'.Lib.A']
+            Lb_A =  csv_tablas[csv_tablas[band+'.Lib.A'].notna()][band+'.Lib.A']
 
-        Libre = list(zip(Lb_B, Lb_A))
+            Libre = list(zip(Lb_B, Lb_A))
 
 
-        for sL in Libre:
+            for sL in Libre:
 
-            newFig.add_vrect(
-                    name='L',
-                    x0=sL[0], x1=sL[1],
-                    label=dict(
-                        text="Libre",
-                        textposition="top center",
-                        font=dict(size=11, family="Arial"),
-                    ),
-                    fillcolor="#33CCFF",
-                    opacity=0.06,
-                    layer="below", 
-                    line_width=1,
-                    line_color="#33CCFF",)
-
-    if('P' in Ops and not checkAct['P']):
-        checkAct['P'] = True
-
-        Protegido = list(csv_tablas[csv_tablas[band+'.Pro'].notna()][band+'.Pro'])
-
-        for fP in Protegido:
-            if(segmento[0]<=fP and fP<=segmento[1]):
-
-                # Añadir región
                 newFig.add_vrect(
-                        name='P',
-                        x0=fP, x1=fP,
+                        name='L',
+                        x0=sL[0], x1=sL[1],
                         label=dict(
-                            text="Protegido",
+                            text="Libre",
                             textposition="top center",
                             font=dict(size=11, family="Arial"),
                         ),
-                        fillcolor="#FF0066",
+                        fillcolor="#33CCFF",
                         opacity=0.06,
                         layer="below", 
-                        line_width=5,
-                        line_color="#FF0066",)
+                        line_width=1,
+                        line_color="#33CCFF",)
 
-        
-    if('S' in Ops and not checkAct['S']):
-        checkAct['S'] = True
+        if('P' in Ops and not checkAct['P']):
+            checkAct['P'] = True
 
-        Smm_B = csv_tablas[csv_tablas[band+'.SMM.B'].notna()][band+'.SMM.B']
+            Protegido = list(csv_tablas[csv_tablas[band+'.Pro'].notna()][band+'.Pro'])
 
-        Smm_A =  csv_tablas[csv_tablas[band+'.SMM.A'].notna()][band+'.SMM.A']
+            for fP in Protegido:
+                if(segmento[0]<=fP and fP<=segmento[1]):
 
-        Maritimo = list(zip(Smm_B, Smm_A))
+                    # Añadir región
+                    newFig.add_vrect(
+                            name='P',
+                            x0=fP, x1=fP,
+                            label=dict(
+                                text="Protegido",
+                                textposition="top center",
+                                font=dict(size=11, family="Arial"),
+                            ),
+                            fillcolor="#FF0066",
+                            opacity=0.06,
+                            layer="below", 
+                            line_width=5,
+                            line_color="#FF0066",)
 
-        for sM in Maritimo:
+            
+        if('S' in Ops and not checkAct['S']):
+            checkAct['S'] = True
+
+            Smm_B = csv_tablas[csv_tablas[band+'.SMM.B'].notna()][band+'.SMM.B']
+
+            Smm_A =  csv_tablas[csv_tablas[band+'.SMM.A'].notna()][band+'.SMM.A']
+
+            Maritimo = list(zip(Smm_B, Smm_A))
+
+            for sM in Maritimo:
+
+                # Añadir región
+                newFig.add_vrect(
+                        name='S',
+                        x0=sM[0], x1=sM[1],
+                        label=dict(
+                            text="Móvil Maritimo",
+                            textposition="top center",
+                            font=dict(size=11, family="Arial"),
+                        ),
+                        fillcolor="#66FF33",
+                        opacity=0.06,
+                        layer="below", 
+                        line_width=1,
+                        line_color="#66FF33",)
+
+        if('F' in Ops and not checkAct['F']):
+            checkAct['F'] = True
+
+            Frontera = list(csv_tablas[csv_tablas[band+'.Fron'].notna()][band+'.Fron'])
+
+            for fF in Frontera:
+                if(segmento[0]<=fF and fF<=segmento[1]):
+
+                    # Añadir región
+                    newFig.add_vrect(
+                            name='F',
+                            x0=fF, x1=fF,
+                            label=dict(
+                                text="Fontera",
+                                textposition="top center",
+                                font=dict(size=11, family="Arial"),
+                            ),
+                            fillcolor="#CC66FF",
+                            opacity=0.06,
+                            layer="below", 
+                            line_width=5,
+                            line_color="#CC66FF",)
+
+        if('C' in Ops and not checkAct['C']):
+            checkAct['C'] = True
 
             # Añadir región
             newFig.add_vrect(
-                    name='S',
-                    x0=sM[0], x1=sM[1],
+                    name='C',
+                    x0=162.0125, x1=162.0375,
                     label=dict(
-                        text="Móvil Maritimo",
+                        text="Determinado",
                         textposition="top center",
                         font=dict(size=11, family="Arial"),
                     ),
-                    fillcolor="#66FF33",
+                    fillcolor="#FF9999",
                     opacity=0.06,
                     layer="below", 
                     line_width=1,
-                    line_color="#66FF33",)
+                    line_color="#FF9999",)
 
-    if('F' in Ops and not checkAct['F']):
-        checkAct['F'] = True
+        if('O' in Ops and not checkAct['O']):
+            checkAct['O'] = True
 
-        Frontera = list(csv_tablas[csv_tablas[band+'.Fron'].notna()][band+'.Fron'])
+            # Añadir región
+            newFig.add_vrect(
+                    name='O',
+                    x0=173.0750, x1=173.0750,
+                    label=dict(
+                        text="Otros",
+                        textposition="top center",
+                        font=dict(size=11, family="Arial"),
+                    ),
+                    fillcolor="#FFFF00",
+                    opacity=0.06,
+                    layer="below", 
+                    line_width=5,
+                    line_color="#FFFF00",)
 
-        for fF in Frontera:
-            if(segmento[0]<=fF and fF<=segmento[1]):
+        if(not delete==set()):
 
-                # Añadir región
-                newFig.add_vrect(
-                        name='F',
-                        x0=fF, x1=fF,
-                        label=dict(
-                            text="Fontera",
-                            textposition="top center",
-                            font=dict(size=11, family="Arial"),
-                        ),
-                        fillcolor="#CC66FF",
-                        opacity=0.06,
-                        layer="below", 
-                        line_width=5,
-                        line_color="#CC66FF",)
+            # Obtener índices de shapes para eliminar
+            d_index = [layoutTrazos.names.index(d) for d in delete]
 
-    if('C' in Ops and not checkAct['C']):
-        checkAct['C'] = True
+            # Eliminar los shapes de los shape actuales
+            # ordenar los índices en orden descendente
+            for i in sorted(d_index, reverse=True):
+                layout_actual.pop(i)
 
-        # Añadir región
-        newFig.add_vrect(
-                name='C',
-                x0=162.0125, x1=162.0375,
-                label=dict(
-                    text="Determinado",
-                    textposition="top center",
-                    font=dict(size=11, family="Arial"),
-                ),
-                fillcolor="#FF9999",
-                opacity=0.06,
-                layer="below", 
-                line_width=1,
-                line_color="#FF9999",)
+            newFig.update_layout(shapes=layout_actual,)
 
-    if('O' in Ops and not checkAct['O']):
-        checkAct['O'] = True
-
-        # Añadir región
-        newFig.add_vrect(
-                name='O',
-                x0=173.0750, x1=173.0750,
-                label=dict(
-                    text="Otros",
-                    textposition="top center",
-                    font=dict(size=11, family="Arial"),
-                ),
-                fillcolor="#FFFF00",
-                opacity=0.06,
-                layer="below", 
-                line_width=5,
-                line_color="#FFFF00",)
-
-    if(not delete==set()):
-
-        # Obtener índices de shapes para eliminar
-        d_index = [layoutTrazos.names.index(d) for d in delete]
-
-        # Eliminar los shapes de los shape actuales
-        # ordenar los índices en orden descendente
-        for i in sorted(d_index, reverse=True):
-            layout_actual.pop(i)
-
-        newFig.update_layout(shapes=layout_actual,)
-
-    return newFig
+        return newFig
+    
+    return no_update
 
 
 # Descarga de la tabla propueta
