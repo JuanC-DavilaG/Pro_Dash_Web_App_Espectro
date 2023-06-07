@@ -1,14 +1,16 @@
 def leer_csv(csv_reader):
 
     def listCor(lista, posicion):
+
         l=[]
         D = " | "
 
-        longitud = len(lista[1:])+1 if(len(lista[1:])+1<=2) else len(lista[1:])
+        # Menos dos, el encabezado y comiena en 0 
+        longitud = len(lista)-2
 
-        for i in range(1,longitud):
+        for i, valor in enumerate(lista):
             H=[]
-            T = lista[i][posicion]
+            T = valor[posicion]
             
             if T.count("|") > 0: D = "|"
                 
@@ -20,7 +22,9 @@ def leer_csv(csv_reader):
                     
                     H.append(T.split(D)[j])
 
-            l.insert(i, list(map(float,H)))
+            l.append(list(map(float,H)))
+
+            if(i == longitud): break
             
         return l
         
@@ -87,19 +91,20 @@ def leer_csv(csv_reader):
 
     c = []
 
-    longitud = len(csv_reader[1:])+1 if(len(csv_reader[1:])+1<=2) else len(csv_reader[1:])
+    # Menos dos, el encabezado y comiena en 0 
+    longitud = len(csv_reader[1:])-2
 
-    print()
+    for i, reg in enumerate(csv_reader[1:]):
 
-    for i in range(1, longitud):
-        # print(i, iP)
-        p.append(csv_reader[i][iP])
-        bw.append(csv_reader[i][iBw])
-        c.append(csv_reader[i][iCon])
+        p.append(reg[iP] if bool(reg[iP]) else 1)
+        bw.append(reg[iBw])
+        c.append(reg[iCon])
 
-    listiRx = listCor(csv_reader, iRx)
+        if(i == longitud): break
 
-    listiTx = listCor(csv_reader, iTx)
+    listiRx = listCor(csv_reader[1:], iRx)
+
+    listiTx = listCor(csv_reader[1:], iTx)
 
     data = {
 
