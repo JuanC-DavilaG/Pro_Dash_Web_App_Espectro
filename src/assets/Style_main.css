@@ -1,0 +1,37 @@
+@import './Styles/home.css';
+@import './Styles/convert.css';
+@import './Styles/analitic.css';
+@import './Styles/tables.css';
+
+body{
+    background-color:#161A1D;
+}
+
+h1#Titulo{
+    color:white;
+    text-align: center;
+}
+
+#Menu{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: rgb(64, 64, 64);
+}
+
+#Menu div{
+    float: left;
+}
+
+#Menu div a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+#Menu div a:hover {
+    background-color: #111;
+}

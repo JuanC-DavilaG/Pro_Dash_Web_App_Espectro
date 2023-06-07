@@ -1,0 +1,10 @@
+gunicorn
+dash
+dash_bootstrap_components
+pandas
+openpyxl
+scipy
+matplotlib
+geopandas
+lxml
+bs4
