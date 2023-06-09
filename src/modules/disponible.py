@@ -1,15 +1,14 @@
 import pandas as pd
 import numpy as np
-from openpyxl import Workbook, load_workbook
+from openpyxl import Workbook
+from modules.dbConnect import *
 
 # Motor Espectro
 def Ocupacion(band, can, baja, alta, condiciones, SerPer, concecionado):
     
     # Leemos los datos
-    tablas = "./assets/DataBase/tablas.csv"
+    csv_tablas = traerData()
 
-    csv_tablas = pd.read_csv(open(tablas, 'rb'), encoding='latin-1')
-    
     ################ Inicio construir segmento
 
     arr = []
@@ -78,8 +77,12 @@ def Ocupacion(band, can, baja, alta, condiciones, SerPer, concecionado):
 
         ################ Inicio Quitar Espectro Protegido
 
-            for i in range(0, len(Protegido)):
-                arr = np.delete(arr, np.where(arr == Protegido[i])[0][0], axis=0)
+            # Busca cada valor en el arreglo del espectro canalizado y descarta los valores en
+            # espectro protegito, arroja una tupla con los indices de los valos a descartar y su
+            # tipo por lo que es necesario extraer el arreglo con el primer [0] y posteriormente 
+            # el valor con el segundo [0].
+            for valorPotegido in Protegido:
+                arr = np.delete(arr, np.where(arr == valorPotegido)[0][0], axis=0)
 
         ################ Fin Quitar Espectro Protegido
 
@@ -145,8 +148,11 @@ def Ocupacion(band, can, baja, alta, condiciones, SerPer, concecionado):
 
         ################ Inicio Quitar Espectro de Frontera
 
-            for i in range(0, len(Frontera)):
-                arr = np.delete(arr, np.where(arr == Frontera[i])[0][0], axis=0)
+            # Busca cada valor en el arreglo del espectro canalizado y descarta los valores en
+            # espectro en frontera, en este caso no es necesario extraer de un arreglo ya que en
+            # eventos posteriores se habia realizado.
+            for valorFrontera in Frontera:
+                arr = np.delete(arr, np.where(arr == valorFrontera))
 
         ################ Fin Quitar Espectro de Frontera
 
@@ -154,7 +160,7 @@ def Ocupacion(band, can, baja, alta, condiciones, SerPer, concecionado):
             Frontera = ['N/A']
             pass
     else:
-            Frontera = ['N/A']
+        Frontera = ['N/A']
 
     ################ Fin Espectro Frontera *********
 
