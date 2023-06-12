@@ -76,6 +76,7 @@ layout = html.Div([
             html.Div([
                 dash_table.DataTable(id='datatable-upload-container',
                     page_action='none',
+                    filter_action='native',
                     style_table = style_tabla,
                     style_header = header_tablas,
                     style_cell = cell_tablas,
@@ -209,6 +210,7 @@ layout = html.Div([
             html.Div([
                 dash_table.DataTable(id='datatable-upload-1-container',
                     page_action='none',
+                    filter_action='native',
                     style_table = style_tabla,
                     style_header = header_tablas,
                     style_cell = cell_tablas, 
